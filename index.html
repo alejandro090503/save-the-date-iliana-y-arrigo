@@ -7,8 +7,15 @@
 <meta name="description" content="Iliana Sánchez y Arrigo Coen se casan el 17 de abril de 2027 en la Ciudad de México. Aparta la fecha.">
 <meta property="og:title" content="Save the Date · Iliana &amp; Arrigo">
 <meta property="og:description" content="17 de abril de 2027 · Ciudad de México">
-<meta property="og:image" content="og-image.jpg">
+<meta property="og:image" content="https://save-the-date-iliana-y-arrigo.vercel.app/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://save-the-date-iliana-y-arrigo.vercel.app/">
 <meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://save-the-date-iliana-y-arrigo.vercel.app/og-image.jpg">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Cormorant+Infant:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
@@ -64,6 +71,64 @@ main{position:relative;z-index:1}
   #bgvid{min-width:0;min-height:0;height:100%;width:auto;max-width:none;
     box-shadow:0 0 90px rgba(36,26,28,.35);}
 }
+
+/* ---------- Sobre (pantalla de apertura) ---------- */
+body.locked{overflow:hidden;height:100%}
+#envelope{
+  position:fixed;inset:0;z-index:80;background:#e9e2d6;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  cursor:pointer;transition:opacity 1.1s ease;
+}
+#envelope.gone{opacity:0;pointer-events:none}
+#envelope::before{
+  content:"";position:absolute;inset:-8%;
+  background:url("https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-iliana-y-arrigo/std/sobre.jpg") center/cover no-repeat;
+  filter:blur(42px) saturate(.7) brightness(1.06);transform:scale(1.12);
+}
+.env-media{position:absolute;inset:0}
+/* imagen y video superpuestos, nunca lado a lado */
+.env-media img,.env-media video{
+  position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;
+}
+@media(min-width:900px){
+  .env-media img,.env-media video{
+    top:50%;left:50%;transform:translate(-50%,-50%);
+    width:auto;height:100%;object-fit:contain;
+    box-shadow:0 0 80px rgba(36,26,28,.34);
+  }
+}
+#env-vid{opacity:0;transition:opacity .35s ease}
+#envelope.opening #env-still{opacity:0;transition:opacity .35s ease}
+#envelope.opening #env-vid{opacity:1}
+/* halo que respira sobre el sello */
+.env-seal{
+  position:absolute;top:49%;left:50%;width:min(38vw,190px);aspect-ratio:1;
+  transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
+  box-shadow:0 0 0 1px rgba(246,239,230,.30);
+  animation:sealPulse 2.8s ease-in-out infinite;
+}
+@keyframes sealPulse{
+  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.55}
+  50%{transform:translate(-50%,-50%) scale(1.10);opacity:.12}
+}
+#envelope.opening .env-seal{display:none}
+.env-cta{
+  position:absolute;left:50%;bottom:clamp(48px,11vh,110px);transform:translateX(-50%);
+  text-align:center;pointer-events:none;
+}
+.env-cta .env-line{display:block;width:1px;height:26px;margin:0 auto 14px;
+  background:linear-gradient(180deg,transparent,rgba(84,16,31,.55));}
+.env-cta .env-txt{
+  display:inline-block;white-space:nowrap;
+  font-family:var(--serif);font-size:clamp(14px,3.6vw,18px);font-weight:600;
+  letter-spacing:.26em;text-transform:uppercase;color:#54101f;padding-left:.26em;
+  text-shadow:0 0 10px rgba(250,246,238,.9),0 0 22px rgba(250,246,238,.75),0 1px 2px rgba(250,246,238,.9);
+  animation:ctaBreathe 2.6s ease-in-out infinite;
+}
+@keyframes ctaBreathe{0%,100%{opacity:.72}50%{opacity:1}}
+#envelope.opening .env-cta{opacity:0;transition:opacity .3s ease}
+.env-flash{position:absolute;inset:0;background:#fffdf8;opacity:0;pointer-events:none;transition:opacity .7s ease}
+#envelope.flash .env-flash{opacity:1}
 
 /* ---------- Partículas (vino + olivo) ---------- */
 #particles{position:fixed;inset:0;z-index:3;pointer-events:none}
@@ -320,6 +385,16 @@ footer a{color:var(--olive-dk);text-decoration:none;font-weight:600}
   <div id="bgtint"></div>
 </div>
 
+<div id="envelope" role="button" tabindex="0" aria-label="Toca para abrir la invitación">
+  <div class="env-media">
+    <img id="env-still" src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-iliana-y-arrigo/std/sobre.jpg" alt="Sobre con sello de cera I&amp;A">
+    <video id="env-vid" playsinline muted preload="auto" src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-iliana-y-arrigo/std/sobre-abre.mp4"></video>
+  </div>
+  <span class="env-seal" aria-hidden="true"></span>
+  <div class="env-cta"><span class="env-line"></span><span class="env-txt">Toca para abrir</span></div>
+  <div class="env-flash"></div>
+</div>
+
 <canvas id="particles" aria-hidden="true"></canvas>
 
 <main>
@@ -496,6 +571,41 @@ footer a{color:var(--olive-dk);text-decoration:none;font-weight:600}
   v.addEventListener('loadeddata',tryplay); v.addEventListener('canplay',tryplay); tryplay();
   var go=function(){tryplay();removeEventListener('touchstart',go);removeEventListener('click',go);};
   addEventListener('touchstart',go);addEventListener('click',go);
+})();
+
+/* Sobre: toca para abrir → video → invitación */
+(function(){
+  var env=document.getElementById('envelope');
+  if(!env){ return; }
+  var vid=document.getElementById('env-vid'), done=false, opened=false, tmr=null;
+  document.body.classList.add('locked');
+
+  function finish(){
+    if(done) return; done=true;
+    if(tmr){ clearTimeout(tmr); tmr=null; }
+    env.classList.add('gone');
+    document.body.classList.remove('locked');
+    setTimeout(function(){ if(env.parentNode) env.parentNode.removeChild(env); },1200);
+  }
+  function open(){
+    if(opened) return; opened=true;
+    /* la música arranca dentro del gesto (requisito de iOS) */
+    var mus=document.getElementById('music');
+    if(mus){ try{ if(mus.readyState===0) mus.load(); var pm=mus.play(); if(pm&&pm.catch) pm.catch(function(){}); }catch(e){} }
+    /* el video de fondo también */
+    var bg=document.getElementById('bgvid');
+    if(bg){ var pb=bg.play(); if(pb&&pb.catch) pb.catch(function(){}); }
+
+    env.classList.add('opening');
+    var p=vid.play();
+    if(p&&p.catch) p.catch(function(){ finish(); });
+    /* red de seguridad por si el video no dispara 'ended' */
+    tmr=setTimeout(function(){ env.classList.add('flash'); setTimeout(finish,700); }, 8200);
+  }
+  vid.addEventListener('ended',function(){ env.classList.add('flash'); setTimeout(finish,650); });
+  vid.addEventListener('error',finish);
+  env.addEventListener('click',open);
+  env.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); } });
 })();
 
 /* Partículas: motas y hojitas en vino y olivo */
