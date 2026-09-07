@@ -378,7 +378,7 @@ footer a{color:var(--olive-dk);text-decoration:none;font-weight:600}
 <body>
 
 <div id="bgwrap">
-  <video id="bgvid" playsinline muted loop autoplay preload="auto"
+  <video id="bgvid" playsinline muted loop preload="auto"
     poster="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-iliana-y-arrigo/std/poster.jpg"
     src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-iliana-y-arrigo/std/save-the-date.mp4"></video>
   <div id="bgveil"></div>
@@ -422,7 +422,7 @@ footer a{color:var(--olive-dk);text-decoration:none;font-weight:600}
     <div class="card rv">
       <p class="kicker">Nos casamos</p>
       <h2>Aparta la fecha</h2>
-      <p class="p">Después de caminar juntos un buen tramo del camino, decidimos que el resto lo queremos recorrer de la mano.</p>
+      <p class="p">Hay decisiones que se toman con el corazón en calma: la nuestra fue elegirnos, y elegirnos para siempre.</p>
       <p class="p">Antes de que llegue la invitación formal, queremos pedirte algo sencillo: guarda este día para nosotros.</p>
       <span class="orn" aria-hidden="true">
         <svg viewBox="0 0 130 14"><path d="M2 7h42M86 7h42" stroke="#5a734f" stroke-width="1" opacity=".7"/><path d="M65 1.6l3.6 5.4L65 12.4 61.4 7z" fill="#701831"/><path d="M54 7c1.8-2 3.4-2.6 4.4-2.6-.2 1.2-.8 2.6-2.4 3.4-.9.5-1.6.4-2-.8z" fill="#5a734f" opacity=".85"/><path d="M76 7c-1.8-2-3.4-2.6-4.4-2.6.2 1.2.8 2.6 2.4 3.4.9.5 1.6.4 2-.8z" fill="#5a734f" opacity=".85"/></svg>
@@ -528,7 +528,7 @@ footer a{color:var(--olive-dk);text-decoration:none;font-weight:600}
 </footer>
 
 <audio id="music" preload="none" loop playsinline>
-  <source src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-iliana-y-arrigo/audio/cancion.mp3" type="audio/mpeg">
+  <source src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-iliana-y-arrigo/audio/cancion.mp3?v=2" type="audio/mpeg">
 </audio>
 <button class="vinyl-btn" id="music-btn" type="button" aria-label="Reproducir música">
   <div class="vinyl-tonearm">
@@ -567,10 +567,18 @@ footer a{color:var(--olive-dk);text-decoration:none;font-weight:600}
   }
   addEventListener('scroll',function(){ if(!tick){tick=true;requestAnimationFrame(upd);} },{passive:true});
   addEventListener('resize',upd); upd();
-  function tryplay(){var p=v.play(); if(p&&p.catch) p.catch(function(){});}
-  v.addEventListener('loadeddata',tryplay); v.addEventListener('canplay',tryplay); tryplay();
-  var go=function(){tryplay();removeEventListener('touchstart',go);removeEventListener('click',go);};
-  addEventListener('touchstart',go);addEventListener('click',go);
+  /* el video del hero NO corre mientras el sobre está cerrado:
+     arranca desde el segundo 0 cuando el sobre termina de abrirse */
+  function startHeroVideo(){
+    try{ v.currentTime=0; }catch(e){}
+    var p=v.play(); if(p&&p.catch) p.catch(function(){
+      var go=function(){ v.play(); removeEventListener('touchstart',go); removeEventListener('click',go); };
+      addEventListener('touchstart',go); addEventListener('click',go);
+    });
+  }
+  window.__startHeroVideo=startHeroVideo;
+  /* si por alguna razón no hay pantalla de sobre, arranca solo */
+  if(!document.getElementById('envelope')) startHeroVideo();
 })();
 
 /* Sobre: toca para abrir → video → invitación */
@@ -585,6 +593,7 @@ footer a{color:var(--olive-dk);text-decoration:none;font-weight:600}
     if(tmr){ clearTimeout(tmr); tmr=null; }
     env.classList.add('gone');
     document.body.classList.remove('locked');
+    if(window.__startHeroVideo) window.__startHeroVideo();
     setTimeout(function(){ if(env.parentNode) env.parentNode.removeChild(env); },1200);
   }
   function open(){
@@ -592,10 +601,6 @@ footer a{color:var(--olive-dk);text-decoration:none;font-weight:600}
     /* la música arranca dentro del gesto (requisito de iOS) */
     var mus=document.getElementById('music');
     if(mus){ try{ if(mus.readyState===0) mus.load(); var pm=mus.play(); if(pm&&pm.catch) pm.catch(function(){}); }catch(e){} }
-    /* el video de fondo también */
-    var bg=document.getElementById('bgvid');
-    if(bg){ var pb=bg.play(); if(pb&&pb.catch) pb.catch(function(){}); }
-
     env.classList.add('opening');
     var p=vid.play();
     if(p&&p.catch) p.catch(function(){ finish(); });
