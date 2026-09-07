@@ -593,8 +593,11 @@ footer a{color:var(--olive-dk);text-decoration:none;font-weight:600}
     if(tmr){ clearTimeout(tmr); tmr=null; }
     env.classList.add('gone');
     document.body.classList.remove('locked');
-    if(window.__startHeroVideo) window.__startHeroVideo();
-    setTimeout(function(){ if(env.parentNode) env.parentNode.removeChild(env); },1200);
+    setTimeout(function(){
+      if(env.parentNode) env.parentNode.removeChild(env);
+      /* recien aqui, con el sobre ya fuera y la invitacion visible, corre el video */
+      if(window.__startHeroVideo) window.__startHeroVideo();
+    },1250);
   }
   function open(){
     if(opened) return; opened=true;
