@@ -133,18 +133,42 @@ body::after{
   position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,rgba(36,26,28,.10) 0%,transparent 22%,transparent 74%,rgba(36,26,28,.34) 100%);
 }
-/* indicador de scroll: sin palabras, solo un chevron que respira */
+/* indicador de scroll: pastilla legible sobre el video, con la palabra Desliza */
 .scroll-cue{
-  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none;
+  position:absolute;bottom:34px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;
+  animation:cueFloat 2.6s ease-in-out infinite;
+}
+.cue-txt{
+  display:inline-block;white-space:nowrap;
+  font-family:var(--serif);font-size:16px;font-weight:600;
+  letter-spacing:.32em;text-transform:uppercase;color:#fff;padding:11px 24px 11px 28px;
+  border-radius:100px;
+  background:rgba(84,16,31,.30);
+  border:1px solid rgba(255,255,255,.34);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:0 5px 16px -8px rgba(36,26,28,.45);
+  text-shadow:0 1px 4px rgba(36,26,28,.85),0 0 12px rgba(36,26,28,.55);
 }
 .cue-chev{
-  width:13px;height:13px;border-right:1.6px solid rgba(255,255,255,.92);border-bottom:1.6px solid rgba(255,255,255,.92);
-  transform:rotate(45deg);filter:drop-shadow(0 2px 6px rgba(0,0,0,.55));
-  animation:cueChev 2.1s ease-in-out infinite;
+  width:16px;height:16px;
+  border-right:2.2px solid #fff;border-bottom:2.2px solid #fff;
+  transform:rotate(45deg);
+  filter:drop-shadow(0 2px 7px rgba(36,26,28,.85));
+  animation:cueChev 1.9s ease-in-out infinite;
 }
-.cue-line{width:1px;height:34px;background:linear-gradient(180deg,rgba(255,255,255,.85),transparent)}
-@keyframes cueChev{0%,100%{opacity:.4;transform:rotate(45deg) translate(-3px,-3px)}50%{opacity:1;transform:rotate(45deg) translate(0,0)}}
+.cue-line{display:none}
+@keyframes cueChev{
+  0%,100%{opacity:.55;transform:rotate(45deg) translate(-3px,-3px)}
+  50%{opacity:1;transform:rotate(45deg) translate(1px,1px)}
+}
+@keyframes cueFloat{
+  0%,100%{transform:translate(-50%,0)}
+  50%{transform:translate(-50%,6px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .scroll-cue,.cue-chev{animation:none}
+}
 
 /* ---------- SEGUNDA PANTALLA — los nombres ---------- */
 .titulo{
@@ -399,8 +423,8 @@ footer a{color:var(--olive-dk);text-decoration:none;font-weight:600}
   <header class="hero">
     <div class="hero-shade"></div>
     <div class="scroll-cue" aria-hidden="true">
+      <span class="cue-txt">Desliza</span>
       <span class="cue-chev"></span>
-      <span class="cue-line"></span>
     </div>
   </header>
 
