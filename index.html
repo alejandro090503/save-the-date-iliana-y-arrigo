@@ -35,12 +35,14 @@
   --script:'Great Vibes',cursive;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:clip}
 body{
   background:var(--ivory);
   color:var(--ink);
   font-family:var(--serif);font-weight:500;font-size:19px;line-height:1.62;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:clip;max-width:100%;
+  touch-action:pan-y;            /* nada de arrastrar de lado en el celular */
 }
 
 /* ---------- Fondo de video permanente ---------- */
@@ -85,39 +87,18 @@ body.locked{overflow:hidden;height:100%}
   background:url("https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-iliana-y-arrigo/std/sobre.jpg") center/cover no-repeat;
   filter:blur(42px) saturate(.7) brightness(1.06);transform:scale(1.12);
 }
-.env-media{position:absolute;inset:0;display:grid;place-items:center}
-/* marco con la proporcion real del sobre (768x1377): el sobre se ve completo
-   y centrado en cualquier pantalla — Android, iPhone o escritorio */
-.env-card{
-  position:relative;
-  aspect-ratio:768/1377;
-  width:min(100%, calc(100svh * 768 / 1377));
-  height:auto;
-  max-height:100%;
-  box-shadow:0 0 70px rgba(36,26,28,.3);
-}
-/* imagen y video superpuestos, nunca lado a lado */
+.env-media{position:absolute;inset:0}
+.env-card{position:absolute;inset:0}
+/* imagen y video a pantalla completa, superpuestos y sin bordes */
 .env-media img,.env-media video{
-  position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;display:block;
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  object-fit:cover;object-position:center;display:block;
 }
 #env-vid{opacity:0;transition:opacity .35s ease}
 #envelope.opening #env-still{opacity:0;transition:opacity .35s ease}
 #envelope.opening #env-vid{opacity:1}
-/* halo que respira sobre el sello — en % del sobre, no de la pantalla,
-   para que caiga siempre justo encima del sello de cera */
-.env-seal{
-  position:absolute;top:49.2%;left:50.4%;width:34%;aspect-ratio:1;
-  transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
-  box-shadow:0 0 0 1px rgba(246,239,230,.30);
-  animation:sealPulse 2.8s ease-in-out infinite;
-}
-@keyframes sealPulse{
-  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.55}
-  50%{transform:translate(-50%,-50%) scale(1.10);opacity:.12}
-}
-#envelope.opening .env-seal{display:none}
 .env-cta{
-  position:absolute;left:50%;bottom:clamp(26px,7%,78px);transform:translateX(-50%);
+  position:absolute;left:50%;bottom:clamp(44px,10vh,104px);transform:translateX(-50%);
   text-align:center;pointer-events:none;z-index:4;
 }
 .env-cta .env-line{display:block;width:1px;height:26px;margin:0 auto 14px;
@@ -146,7 +127,7 @@ body::after{
 
 /* ---------- HERO — solo el video, sin texto ---------- */
 .hero{
-  min-height:100svh;position:relative;
+  min-height:100svh;position:relative;overflow:hidden;
 }
 .hero-shade{
   position:absolute;inset:0;pointer-events:none;
@@ -168,7 +149,7 @@ body::after{
 /* ---------- SEGUNDA PANTALLA — los nombres ---------- */
 .titulo{
   min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:80px 24px;position:relative;
+  text-align:center;padding:80px 24px;position:relative;overflow:hidden;
 }
 .titulo-shade{
   position:absolute;inset:0;pointer-events:none;
@@ -178,7 +159,7 @@ body::after{
 /* nube vino difusa detrás del bloque de texto */
 .hero-cloud{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:min(150vw,860px);height:76%;pointer-events:none;
+  width:100%;max-width:860px;height:76%;pointer-events:none;
   background:radial-gradient(60% 52% at 50% 50%,
       rgba(84,16,31,.52) 0%,
       rgba(84,16,31,.40) 32%,
@@ -406,7 +387,6 @@ footer a{color:var(--olive-dk);text-decoration:none;font-weight:600}
     <div class="env-card">
       <img id="env-still" src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-iliana-y-arrigo/std/sobre.jpg" alt="Sobre con sello de cera I&amp;A">
       <video id="env-vid" playsinline muted preload="auto" src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-iliana-y-arrigo/std/sobre-abre.mp4"></video>
-      <span class="env-seal" aria-hidden="true"></span>
       <div class="env-cta"><span class="env-line"></span><span class="env-txt">Toca para abrir</span></div>
     </div>
   </div>
